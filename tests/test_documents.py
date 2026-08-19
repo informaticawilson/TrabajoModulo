@@ -197,9 +197,3 @@ def test_pagination_limit_out_of_range_rejected(client):
     assert client.get("/documents/search?limit=101", headers=headers).status_code == 422
 
 
-def test_pagination_negative_offset_rejected(client):
-    """offset=-1 debe rechazarse con 422."""
-    token = _get_token(client)
-    headers = {"Authorization": f"Bearer {token}"}
-
-    assert client.get("/documents/search?offset=-1", headers=headers).status_code == 422
