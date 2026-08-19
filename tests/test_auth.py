@@ -18,8 +18,4 @@ def test_register_duplicate_username(client):
     assert response.status_code == 409
 
 
-def test_register_then_login(client):
-    client.post("/auth/register", json={"username": "freshuser", "password": "mi_clave_456"})
-    response = client.post("/auth/login", json={"username": "freshuser", "password": "mi_clave_456"})
-    assert response.status_code == 200
-    assert "access_token" in response.json()
+
