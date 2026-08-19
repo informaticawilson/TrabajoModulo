@@ -88,4 +88,4 @@ quedan pendientes para ejecutar directamente en Kiro sin regenerar lo
 ya construido.
 
 ## Autor
-[Tu nombre] — Caso de estudio TELBOL S.A.
+[Wilson Santos Conde Castillo] — Caso de estudio TELBOL S.A.
