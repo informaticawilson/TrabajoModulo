@@ -1,0 +1,107 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "10. Agregar endpoint `GET /documents/{id}` para descargar el archivo físico de un documento.": [
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173199139
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173216756
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173426587
+      }
+    ],
+    "11. Agregar endpoint `DELETE /documents/{id}` restringido al usuario propietario.": [
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173200123
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173434945
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173593742
+      }
+    ],
+    "12. Agregar paginación simple (`limit`, `offset`) al endpoint de búsqueda.": [
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173200314
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173600855
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173712941
+      }
+    ],
+    "13. Agregar endpoint `POST /auth/register` para crear usuarios nuevos (actualmente solo existe el usuario demo sembrado en el arranque).": [
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173200503
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173717083
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173787735
+      }
+    ],
+    "14. (Opcional) Agregar un frontend mínimo en `frontend/` (HTML + fetch) que consuma la API para cumplir la parte de \"interfaz mínima\" mencionada en la definición del problema.": [
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173200673
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173809412
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787174009731
+      }
+    ],
+    "15. (Opcional) Documentar los endpoints con ejemplos adicionales en `docs/especificacion-proyecto.md`.": [
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787173200792
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787174014363
+      },
+      {
+        "executionId": "8830fac4-8bc4-46ae-bc9f-4a991c47d78f",
+        "chatSessionId": "sess_435dcf81-a2df-4447-8ab1-81b31423299c",
+        "timestamp": 1787174077194
+      }
+    ]
+  }
+}

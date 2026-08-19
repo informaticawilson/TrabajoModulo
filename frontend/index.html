@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TELBOL DocManager</title>
+  <style>
+    /* ── Reset y variables ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --brand:   #1a56db;
+      --danger:  #e02424;
+      --success: #057a55;
+      --gray-50: #f9fafb;
+      --gray-100:#f3f4f6;
+      --gray-300:#d1d5db;
+      --gray-500:#6b7280;
+      --gray-700:#374151;
+      --gray-900:#111827;
+      --radius:  6px;
+      --shadow:  0 1px 3px rgba(0,0,0,.12);
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: var(--gray-100);
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+
+    /* ── Cabecera ── */
+    header {
+      background: var(--brand);
+      color: #fff;
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--shadow);
+    }
+    header h1 { font-size: 1.15rem; font-weight: 700; letter-spacing: .02em; }
+    #userInfo { font-size: .85rem; display: flex; align-items: center; gap: .75rem; }
+    #userInfo span { opacity: .9; }
+
+    /* ── Botones ── */
+    button, .btn {
+      cursor: pointer;
+      border: none;
+      border-radius: var(--radius);
+      font-size: .875rem;
+      font-weight: 500;
+      padding: .45rem 1rem;
+      transition: filter .15s;
+    }
+    button:hover { filter: brightness(.92); }
+    button:disabled { opacity: .5; cursor: not-allowed; }
+
+    .btn-primary   { background: var(--brand);   color: #fff; }
+    .btn-secondary { background: var(--gray-300); color: var(--gray-700); }
+    .btn-danger    { background: var(--danger);   color: #fff; }
+    .btn-success   { background: var(--success);  color: #fff; }
+    .btn-sm        { padding: .3rem .7rem; font-size: .8rem; }
+
+    /* ── Formularios ── */
+    .form-group { display: flex; flex-direction: column; gap: .35rem; margin-bottom: .85rem; }
+    label { font-size: .8rem; font-weight: 600; color: var(--gray-700); }
+    input[type="text"], input[type="password"], input[type="file"],
+    select, textarea {
+      border: 1px solid var(--gray-300);
+      border-radius: var(--radius);
+      padding: .45rem .65rem;
+      font-size: .9rem;
+      width: 100%;
+      background: #fff;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: 2px solid var(--brand);
+      outline-offset: 1px;
+    }
+    textarea { resize: vertical; min-height: 60px; }
+
+    /* ── Card genérica ── */
+    .card {
+      background: #fff;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 1.5rem;
+    }
+    .card h2 { font-size: 1.05rem; margin-bottom: 1.1rem; color: var(--gray-900); }
+
+    /* ── Layout principal ── */
+    main { max-width: 900px; margin: 1.5rem auto; padding: 0 1rem; }
+
+    /* ── Sección auth ── */
+    #authSection {
+      max-width: 380px;
+      margin: 2rem auto;
+    }
+    #authSection .tabs {
+      display: flex;
+      gap: 0;
+      margin-bottom: 1.25rem;
+      border-bottom: 2px solid var(--gray-300);
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      margin-bottom: -2px;
+      padding: .5rem 1.1rem;
+      font-size: .9rem;
+      color: var(--gray-500);
+      border-radius: 0;
+    }
+    .tab-btn.active {
+      color: var(--brand);
+      border-bottom-color: var(--brand);
+      font-weight: 700;
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+    #authSection .btn-primary { width: 100%; margin-top: .25rem; }
+
+    /* ── Sección documentos ── */
+    #docsSection { display: none; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+    @media (max-width: 600px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── Barra de búsqueda ── */
+    .search-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .6rem;
+      align-items: flex-end;
+      margin-bottom: 1.1rem;
+    }
+    .search-bar input[type="text"] { flex: 1 1 180px; }
+    .search-bar select           { flex: 0 0 160px; }
+
+    /* ── Tabla ── */
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: .875rem; }
+    thead th {
+      background: var(--gray-50);
+      border-bottom: 1px solid var(--gray-300);
+      padding: .6rem .75rem;
+      text-align: left;
+      font-weight: 600;
+      color: var(--gray-700);
+      white-space: nowrap;
+    }
+    tbody tr { border-bottom: 1px solid var(--gray-100); }
+    tbody tr:hover { background: var(--gray-50); }
+    tbody td { padding: .55rem .75rem; vertical-align: middle; }
+    .badge {
+      display: inline-block;
+      background: #e0edff;
+      color: #1a56db;
+      border-radius: 999px;
+      padding: .1rem .55rem;
+      font-size: .75rem;
+      font-weight: 600;
+    }
+    .actions-cell { display: flex; gap: .4rem; }
+    #emptyMsg {
+      text-align: center;
+      padding: 2rem;
+      color: var(--gray-500);
+      font-size: .9rem;
+    }
+
+    /* ── Alertas ── */
+    .alert {
+      border-radius: var(--radius);
+      padding: .6rem .9rem;
+      font-size: .85rem;
+      margin-bottom: .9rem;
+    }
+    .alert-error   { background: #fde8e8; color: #9b1c1c; }
+    .alert-success { background: #def7ec; color: #03543f; }
+    .alert-info    { background: #e1effe; color: #1e429f; }
+
+    /* ── Spinner ── */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid #fff;
+      border-top-color: transparent;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle;
+      margin-right: .3rem;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>TELBOL DocManager</h1>
+  <div id="userInfo" style="display:none">
+    <span id="usernameLabel"></span>
+    <button class="btn-secondary btn-sm" onclick="logout()">Cerrar sesión</button>
+  </div>
+</header>
+
+<!-- ══════════════════════════════════════════
+     SECCIÓN AUTENTICACIÓN
+══════════════════════════════════════════ -->
+<main>
+  <section id="authSection">
+    <div class="card">
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('login')">Iniciar sesión</button>
+        <button class="tab-btn"        onclick="switchTab('register')">Registrarse</button>
+      </div>
+
+      <!-- Login -->
+      <div id="loginPanel" class="tab-panel active">
+        <div id="loginAlert"></div>
+        <div class="form-group">
+          <label for="loginUser">Usuario</label>
+          <input id="loginUser" type="text" placeholder="usuario" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="loginPass">Contraseña</label>
+          <input id="loginPass" type="password" placeholder="••••••••" autocomplete="current-password" />
+        </div>
+        <button class="btn-primary" id="loginBtn" onclick="doLogin()">Iniciar sesión</button>
+      </div>
+
+      <!-- Registro -->
+      <div id="registerPanel" class="tab-panel">
+        <div id="registerAlert"></div>
+        <div class="form-group">
+          <label for="regUser">Usuario</label>
+          <input id="regUser" type="text" placeholder="nuevo usuario" autocomplete="username" />
+        </div>
+        <div class="form-group">
+          <label for="regPass">Contraseña</label>
+          <input id="regPass" type="password" placeholder="••••••••" autocomplete="new-password" />
+        </div>
+        <button class="btn-primary" id="registerBtn" onclick="doRegister()">Crear cuenta</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       SECCIÓN DOCUMENTOS
+  ══════════════════════════════════════════ -->
+  <section id="docsSection">
+
+    <div class="grid-2">
+
+      <!-- Subir documento -->
+      <div class="card">
+        <h2>Subir documento</h2>
+        <div id="uploadAlert"></div>
+        <div class="form-group">
+          <label for="docTitle">Título <span style="color:red">*</span></label>
+          <input id="docTitle" type="text" placeholder="Informe trimestral" />
+        </div>
+        <div class="form-group">
+          <label for="docCategory">Categoría <span style="color:red">*</span></label>
+          <input id="docCategory" type="text" placeholder="Contratos, Facturas…" list="catSuggestions" />
+          <datalist id="catSuggestions">
+            <option value="Contratos" />
+            <option value="Facturas" />
+            <option value="Informes" />
+            <option value="Manuales" />
+            <option value="Otros" />
+          </datalist>
+        </div>
+        <div class="form-group">
+          <label for="docDesc">Descripción</label>
+          <textarea id="docDesc" placeholder="(opcional)"></textarea>
+        </div>
+        <div class="form-group">
+          <label for="docFile">Archivo <span style="color:red">*</span></label>
+          <input id="docFile" type="file" />
+        </div>
+        <button class="btn-primary" id="uploadBtn" onclick="doUpload()">Subir archivo</button>
+      </div>
+
+      <!-- Búsqueda -->
+      <div class="card">
+        <h2>Buscar documentos</h2>
+        <div class="search-bar">
+          <div class="form-group" style="margin-bottom:0;flex:1 1 180px">
+            <label for="searchQ">Texto</label>
+            <input id="searchQ" type="text" placeholder="Buscar por título…"
+                   onkeydown="if(event.key==='Enter') doSearch()" />
+          </div>
+          <div class="form-group" style="margin-bottom:0;flex:0 0 150px">
+            <label for="searchCat">Categoría</label>
+            <select id="searchCat">
+              <option value="">Todas</option>
+              <option>Contratos</option>
+              <option>Facturas</option>
+              <option>Informes</option>
+              <option>Manuales</option>
+              <option>Otros</option>
+            </select>
+          </div>
+          <button class="btn-primary" onclick="doSearch()" style="align-self:flex-end">Buscar</button>
+        </div>
+
+        <div class="table-wrap">
+          <table id="docsTable">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Título</th>
+                <th>Categoría</th>
+                <th>Descripción</th>
+                <th>Fecha</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="docsBody"></tbody>
+          </table>
+          <p id="emptyMsg" style="display:none">No se encontraron documentos.</p>
+        </div>
+      </div>
+
+    </div><!-- /.grid-2 -->
+
+  </section>
+</main>
+
+<script>
+  // ══════════════════════════════════════════
+  //  Configuración
+  // ══════════════════════════════════════════
+  const API_BASE = 'http://localhost:8000';
+
+  // ══════════════════════════════════════════
+  //  Estado de sesión
+  // ══════════════════════════════════════════
+  let token    = localStorage.getItem('docmanager_token')    || null;
+  let username = localStorage.getItem('docmanager_username') || null;
+
+  // Al cargar la página, si hay sesión activa ir directo a documentos
+  window.addEventListener('DOMContentLoaded', () => {
+    if (token) showDocs();
+    else       showAuth();
+  });
+
+  // ══════════════════════════════════════════
+  //  Helpers de UI
+  // ══════════════════════════════════════════
+  function showAuth() {
+    document.getElementById('authSection').style.display = '';
+    document.getElementById('docsSection').style.display = 'none';
+    document.getElementById('userInfo').style.display    = 'none';
+  }
+
+  function showDocs() {
+    document.getElementById('authSection').style.display = 'none';
+    document.getElementById('docsSection').style.display = '';
+    document.getElementById('userInfo').style.display    = '';
+    document.getElementById('usernameLabel').textContent = `Hola, ${username}`;
+    doSearch(); // carga inicial
+  }
+
+  function switchTab(tab) {
+    ['login','register'].forEach(t => {
+      document.getElementById(t + 'Panel').classList.toggle('active', t === tab);
+      document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+        btn.classList.toggle('active', (i === 0 && tab === 'login') || (i === 1 && tab === 'register'));
+      });
+    });
+  }
+
+  function setAlert(elId, msg, type = 'error') {
+    const el = document.getElementById(elId);
+    if (!msg) { el.innerHTML = ''; return; }
+    el.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  }
+
+  function setLoading(btnId, loading, label) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    btn.innerHTML = loading
+      ? `<span class="spinner"></span>${label}`
+      : label;
+  }
+
+  // ══════════════════════════════════════════
+  //  Auth
+  // ══════════════════════════════════════════
+  async function doLogin() {
+    const user = document.getElementById('loginUser').value.trim();
+    const pass = document.getElementById('loginPass').value;
+    setAlert('loginAlert', '');
+    if (!user || !pass) { setAlert('loginAlert', 'Completa usuario y contraseña.'); return; }
+
+    setLoading('loginBtn', true, 'Entrando…');
+    try {
+      const res = await fetch(`${API_BASE}/auth/login`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ username: user, password: pass }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Error al iniciar sesión');
+
+      token    = data.access_token;
+      username = user;
+      localStorage.setItem('docmanager_token',    token);
+      localStorage.setItem('docmanager_username', username);
+      showDocs();
+    } catch (err) {
+      setAlert('loginAlert', err.message);
+    } finally {
+      setLoading('loginBtn', false, 'Iniciar sesión');
+    }
+  }
+
+  async function doRegister() {
+    const user = document.getElementById('regUser').value.trim();
+    const pass = document.getElementById('regPass').value;
+    setAlert('registerAlert', '');
+    if (!user || !pass) { setAlert('registerAlert', 'Completa todos los campos.'); return; }
+
+    setLoading('registerBtn', true, 'Creando cuenta…');
+    try {
+      const res = await fetch(`${API_BASE}/auth/register`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ username: user, password: pass }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Error al registrarse');
+
+      setAlert('registerAlert', '¡Cuenta creada! Ahora inicia sesión.', 'success');
+      document.getElementById('regUser').value = '';
+      document.getElementById('regPass').value = '';
+      setTimeout(() => switchTab('login'), 1200);
+    } catch (err) {
+      setAlert('registerAlert', err.message);
+    } finally {
+      setLoading('registerBtn', false, 'Crear cuenta');
+    }
+  }
+
+  function logout() {
+    token    = null;
+    username = null;
+    localStorage.removeItem('docmanager_token');
+    localStorage.removeItem('docmanager_username');
+    showAuth();
+  }
+
+  // ══════════════════════════════════════════
+  //  Documentos — subida
+  // ══════════════════════════════════════════
+  async function doUpload() {
+    const title    = document.getElementById('docTitle').value.trim();
+    const category = document.getElementById('docCategory').value.trim();
+    const desc     = document.getElementById('docDesc').value.trim();
+    const fileEl   = document.getElementById('docFile');
+    setAlert('uploadAlert', '');
+
+    if (!title)           { setAlert('uploadAlert', 'El título es obligatorio.');    return; }
+    if (!category)        { setAlert('uploadAlert', 'La categoría es obligatoria.'); return; }
+    if (!fileEl.files[0]) { setAlert('uploadAlert', 'Selecciona un archivo.');       return; }
+
+    const fd = new FormData();
+    fd.append('title',    title);
+    fd.append('category', category);
+    if (desc) fd.append('description', desc);
+    fd.append('file', fileEl.files[0]);
+
+    setLoading('uploadBtn', true, 'Subiendo…');
+    try {
+      const res = await fetch(`${API_BASE}/documents`, {
+        method:  'POST',
+        headers: { 'Authorization': `Bearer ${token}` },
+        body:    fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.detail || 'Error al subir el archivo');
+
+      setAlert('uploadAlert', `Documento "${data.title}" subido correctamente.`, 'success');
+      document.getElementById('docTitle').value    = '';
+      document.getElementById('docCategory').value = '';
+      document.getElementById('docDesc').value     = '';
+      fileEl.value = '';
+      doSearch(); // refresca la tabla
+    } catch (err) {
+      if (err.message.includes('401')) { sessionExpired(); return; }
+      setAlert('uploadAlert', err.message);
+    } finally {
+      setLoading('uploadBtn', false, 'Subir archivo');
+    }
+  }
+
+  // ══════════════════════════════════════════
+  //  Documentos — búsqueda
+  // ══════════════════════════════════════════
+  async function doSearch() {
+    const q   = document.getElementById('searchQ').value.trim();
+    const cat = document.getElementById('searchCat').value;
+
+    const params = new URLSearchParams({ limit: 50, offset: 0 });
+    if (q)   params.set('q', q);
+    if (cat) params.set('category', cat);
+
+    try {
+      const res = await fetch(`${API_BASE}/documents/search?${params}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (res.status === 401) { sessionExpired(); return; }
+      const docs = await res.json();
+      renderTable(docs);
+    } catch (err) {
+      console.error('Error al buscar documentos:', err);
+    }
+  }
+
+  function renderTable(docs) {
+    const tbody   = document.getElementById('docsBody');
+    const emptyEl = document.getElementById('emptyMsg');
+    tbody.innerHTML = '';
+
+    if (!docs.length) {
+      emptyEl.style.display = '';
+      return;
+    }
+    emptyEl.style.display = 'none';
+
+    docs.forEach(doc => {
+      const tr = document.createElement('tr');
+      const date = new Date(doc.uploaded_at).toLocaleDateString('es-ES', {
+        day: '2-digit', month: '2-digit', year: 'numeric'
+      });
+      tr.innerHTML = `
+        <td>${doc.id}</td>
+        <td>${escHtml(doc.title)}</td>
+        <td><span class="badge">${escHtml(doc.category)}</span></td>
+        <td>${escHtml(doc.description || '—')}</td>
+        <td style="white-space:nowrap">${date}</td>
+        <td class="actions-cell">
+          <button class="btn-success btn-sm" onclick="doDownload(${doc.id}, '${escHtml(doc.title)}')">Descargar</button>
+          <button class="btn-danger  btn-sm" onclick="doDelete(${doc.id}, '${escHtml(doc.title)}')">Eliminar</button>
+        </td>`;
+      tbody.appendChild(tr);
+    });
+  }
+
+  // ══════════════════════════════════════════
+  //  Documentos — descarga
+  // ══════════════════════════════════════════
+  async function doDownload(id, title) {
+    try {
+      const res = await fetch(`${API_BASE}/documents/${id}`, {
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (res.status === 401) { sessionExpired(); return; }
+      if (!res.ok) { alert('No se pudo descargar el documento.'); return; }
+
+      const blob = await res.blob();
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement('a');
+
+      // Intenta obtener el nombre real del Content-Disposition
+      const cd   = res.headers.get('Content-Disposition') || '';
+      const match = cd.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+      a.download = match ? match[1].replace(/['"]/g, '') : title;
+      a.href     = url;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+    } catch (err) {
+      alert('Error al descargar: ' + err.message);
+    }
+  }
+
+  // ══════════════════════════════════════════
+  //  Documentos — eliminar
+  // ══════════════════════════════════════════
+  async function doDelete(id, title) {
+    if (!confirm(`¿Eliminar el documento "${title}"? Esta acción no se puede deshacer.`)) return;
+
+    try {
+      const res = await fetch(`${API_BASE}/documents/${id}`, {
+        method:  'DELETE',
+        headers: { 'Authorization': `Bearer ${token}` },
+      });
+      if (res.status === 401) { sessionExpired(); return; }
+      if (res.status === 403) { alert('No tienes permiso para eliminar este documento.'); return; }
+      if (!res.ok && res.status !== 204) { alert('Error al eliminar el documento.'); return; }
+      doSearch(); // refresca
+    } catch (err) {
+      alert('Error al eliminar: ' + err.message);
+    }
+  }
+
+  // ══════════════════════════════════════════
+  //  Utilidades
+  // ══════════════════════════════════════════
+  function sessionExpired() {
+    alert('La sesión expiró. Vuelve a iniciar sesión.');
+    logout();
+  }
+
+  function escHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  // Enter en los campos de login / registro dispara el submit
+  document.addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return;
+    if (document.getElementById('loginPanel').classList.contains('active')) doLogin();
+    else doRegister();
+  });
+</script>
+</body>
+</html>
